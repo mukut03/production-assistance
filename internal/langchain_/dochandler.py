@@ -33,7 +33,7 @@ def ls_(path):
 def store(docs, file):
     embedding = OpenAIEmbeddings(openai_api_key = api_key)
 
-    #TODO: VINTAI-17
+
     persist_directory = os.path.join('docs/chroma/', file)
 
     vectordb = Chroma.from_documents(
@@ -41,6 +41,8 @@ def store(docs, file):
         embedding=embedding,
         persist_directory=persist_directory
     )
+
+    vectordb.persist()
     if vectordb:
         return persist_directory
     return "vector storage error"

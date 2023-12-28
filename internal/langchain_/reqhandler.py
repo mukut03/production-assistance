@@ -1,4 +1,4 @@
-import os
+
 from langchain.vectorstores.chroma import Chroma
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
@@ -13,9 +13,8 @@ if openai_api_key is None:
 else:
     print("OpenAI key found")
 def get_dict(vs, prompt):
-    persist_directory = vs
     embedding = OpenAIEmbeddings(openai_api_key = openai_api_key)
-    vectordb = Chroma(persist_directory=persist_directory, embedding_function=embedding)
+    vectordb = Chroma(persist_directory=vs, embedding_function=embedding)
 
     llm = ChatOpenAI(model_name=model, temperature=0, openai_api_key = openai_api_key)
 
@@ -24,4 +23,7 @@ def get_dict(vs, prompt):
         retriever=vectordb.as_retriever(),
         return_source_documents=True,
     )
-    return req_parser.parse((qa_chain({"query":prompt})["result"]))
+
+    result = qa_chain({"query":prompt})["result"]
+    print(result)
+    return req_parser.parse(result)
